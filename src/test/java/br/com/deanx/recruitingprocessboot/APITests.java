@@ -1,5 +1,8 @@
 package br.com.deanx.recruitingprocessboot;
 
+import br.com.deanx.recruitingprocessboot.offers.Offer;
+import br.com.deanx.recruitingprocessboot.offers.OfferRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.http.MediaType.parseMediaType;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.time.LocalDate;
 
+import static org.hamcrest.Matchers.is;
+import static org.springframework.http.MediaType.parseMediaType;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RecruitingProcessBootApplication.class)
@@ -20,6 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class APITests {
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private OfferRepository offerRepository;
 
     @Test
     public void givenOffers_whenGetOffers_theStatus200() throws Exception {
@@ -30,6 +39,10 @@ public class APITests {
         );
     }
 
+    @Before
+    public void setUp() {
+        offerRepository.deleteAll();
+    }
 
     @Test
     public void givenApplications_whenGetApplications_theStatus200() throws Exception {
@@ -50,5 +63,22 @@ public class APITests {
                 "}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void givenOffers_whenGetOfferById_thenStatus200() throws Exception {
+        Offer offer = new Offer();
+        offer.setJobTitle("Senior developer");
+        offer.setStartDate(LocalDate.now());
+        offer.setNumberOfApplications(1);
+
+        Offer newOffer = offerRepository.save(offer);
+        Long newOfferId = newOffer.getId();
+        mockMvc.perform(get("/offers/" + newOfferId)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.jobTitle",is("Senior developer")));
+
     }
 }
