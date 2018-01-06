@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @EnableAutoConfiguration
-public class OffersController {
+public class OfferController {
     @RequestMapping(value = "/offers", method = RequestMethod.GET)
     String listOrders() {
-        return "opa";
+        return "";
     }
 }
