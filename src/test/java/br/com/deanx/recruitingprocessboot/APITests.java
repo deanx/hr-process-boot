@@ -22,7 +22,7 @@ public class APITests {
 
     @Test
     public void givenOffers_whenGetOffers_theStatus200() throws Exception {
-        this.mockMvc.perform(get("/")).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/offers")).andExpect(status().isOk())
                 .andExpect(content().contentType("application/json")
         );
     }
