@@ -10,9 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.http.MediaType.parseMediaType;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,4 +31,24 @@ public class APITests {
     }
 
 
+    @Test
+    public void givenApplications_whenGetApplications_theStatus200() throws Exception {
+        this.mockMvc.perform(get("/applications")
+                .accept(parseMediaType("application/json"))
+        ).andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
+                );
+    }
+
+
+    @Test
+    public void givenOffers_whenPostOffer_thenStatus201() throws Exception {
+        mockMvc.perform(post("/offers").content("{\n" +
+                "\"jobTitle\": \"Senior developer\",\n" +
+                "\"startDate\": 2012-04-23T18:25:43.511Z,\n" +
+                "\"numberOfApplications\":12\n" +
+                "}"))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
 }
