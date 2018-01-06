@@ -1,5 +1,6 @@
 package br.com.deanx.recruitingprocessboot;
 
+import br.com.deanx.recruitingprocessboot.application.ApplicationRepository;
 import br.com.deanx.recruitingprocessboot.offers.Offer;
 import br.com.deanx.recruitingprocessboot.offers.OfferRepository;
 import org.junit.Before;
@@ -29,7 +30,14 @@ public class APITests {
 
     @Autowired
     private OfferRepository offerRepository;
+    @Autowired
+    private ApplicationRepository applicationRepository;
 
+    @Before
+    public void setUp() {
+        applicationRepository.deleteAll();
+        offerRepository.deleteAll();
+    }
     @Test
     public void givenOffers_whenGetOffers_theStatus200() throws Exception {
         this.mockMvc.perform(get("/offers")
@@ -37,11 +45,6 @@ public class APITests {
         ).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
         );
-    }
-
-    @Before
-    public void setUp() {
-        offerRepository.deleteAll();
     }
 
     @Test
@@ -81,4 +84,27 @@ public class APITests {
                 .andExpect(jsonPath("$.jobTitle",is("Senior developer")));
 
     }
+
+    @Test
+    public void givenApplications_whenPostApplication_thenStatus201() throws Exception {
+        Offer offer = new Offer();
+        offer.setJobTitle("Senior developer");
+        offer.setStartDate(LocalDate.now());
+        offer.setNumberOfApplications(1);
+
+        Offer newOffer = offerRepository.save(offer);
+        Long newOfferId = newOffer.getId();
+
+        mockMvc.perform(post("/applications").content("{\n" +
+                "    \"offer\": {\n" +
+                "        \"id\": " + newOfferId + "\n" +
+                "    },\n" +
+                "    \"email\": \"jane@doe.com\",\n" +
+                "    \"resume\": \"Thats a text\",\n" +
+                "    \"applicationStatus\": \"HIRED\"\n" +
+                "}").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
 }
