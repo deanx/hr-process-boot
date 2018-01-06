@@ -45,9 +45,9 @@ public class APITests {
     public void givenOffers_whenPostOffer_thenStatus201() throws Exception {
         mockMvc.perform(post("/offers").content("{\n" +
                 "\"jobTitle\": \"Senior developer\",\n" +
-                "\"startDate\": 2012-04-23T18:25:43.511Z,\n" +
+                "\"startDate\": \"2012-04-23\",\n" +
                 "\"numberOfApplications\":12\n" +
-                "}"))
+                "}").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
