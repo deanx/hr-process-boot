@@ -60,7 +60,7 @@ public class Application {
         this.id = id;
     }
 
-    enum applicationStatus {APPLIED, INVITED, REJECTED, HIRED}
+    public enum applicationStatus {APPLIED, INVITED, REJECTED, HIRED}
 
     @Enumerated(EnumType.STRING)
     private applicationStatus applicationStatus;
