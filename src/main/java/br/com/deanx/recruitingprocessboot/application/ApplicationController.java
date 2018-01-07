@@ -32,7 +32,6 @@ public class ApplicationController {
         } catch(NullPointerException npe) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        offer.setNumberOfApplications(offer.getNumberOfApplications()+1);
         application.setOffer(offer);
         application = repository.save(application);
         offerService.applyToOffer(offer, application);

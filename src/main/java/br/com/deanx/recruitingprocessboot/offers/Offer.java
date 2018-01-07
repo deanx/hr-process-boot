@@ -1,12 +1,19 @@
 package br.com.deanx.recruitingprocessboot.offers;
 
+import br.com.deanx.recruitingprocessboot.application.Application;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property="id")
+@Table(name="offer")
 public class Offer {
     @Id
     @GeneratedValue
@@ -17,6 +24,10 @@ public class Offer {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate startDate;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Application> applicationList;
 
     @Transient
     private int numberOfApplications;
@@ -67,5 +78,13 @@ public class Offer {
     }
     public void setJobTitle(String jobTitle) {
         this.jobTitle = jobTitle;
+    }
+
+    public List<Application> getApplicationList() {
+        return applicationList;
+    }
+
+    public void setApplicationList(List<Application> applicationList) {
+        this.applicationList = applicationList;
     }
 }
