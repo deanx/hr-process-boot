@@ -1,6 +1,6 @@
 package br.com.deanx.recruitingprocessboot.application;
 
-import br.com.deanx.recruitingprocessboot.offers.Offer;
+import br.com.deanx.recruitingprocessboot.offer.Offer;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.validator.constraints.Email;

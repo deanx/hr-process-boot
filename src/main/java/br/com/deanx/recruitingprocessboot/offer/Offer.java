@@ -1,4 +1,4 @@
-package br.com.deanx.recruitingprocessboot.offers;
+package br.com.deanx.recruitingprocessboot.offer;
 
 import br.com.deanx.recruitingprocessboot.application.Application;
 import com.fasterxml.jackson.annotation.JsonFormat;

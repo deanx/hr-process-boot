@@ -2,9 +2,9 @@ package br.com.deanx.recruitingprocessboot;
 
 import br.com.deanx.recruitingprocessboot.application.Application;
 import br.com.deanx.recruitingprocessboot.application.ApplicationRepository;
-import br.com.deanx.recruitingprocessboot.offers.Offer;
-import br.com.deanx.recruitingprocessboot.offers.OfferRepository;
-import br.com.deanx.recruitingprocessboot.offers.OfferService;
+import br.com.deanx.recruitingprocessboot.offer.Offer;
+import br.com.deanx.recruitingprocessboot.offer.OfferRepository;
+import br.com.deanx.recruitingprocessboot.offer.OfferService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +45,7 @@ public class OfferAPITests {
     }
     @Test
     public void givenOffers_whenGetOffers_theStatus200() throws Exception {
-        this.mockMvc.perform(get("/offers/")
+        this.mockMvc.perform(get("/offer/")
                 .accept(parseMediaType("application/json"))
         ).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
@@ -54,7 +54,7 @@ public class OfferAPITests {
 
     @Test
     public void givenOffers_whenPostOffer_thenStatus201() throws Exception {
-        mockMvc.perform(post("/offers/").content("{\n" +
+        mockMvc.perform(post("/offer/").content("{\n" +
                 "\"jobTitle\": \"Senior developer\",\n" +
                 "\"startDate\": \"2012-04-23\",\n" +
                 "\"numberOfApplications\":12\n" +
@@ -67,7 +67,7 @@ public class OfferAPITests {
     public void givenOffers_whenGetOfferById_thenStatus200() throws Exception {
         Offer fakeOffer = apiUtilsTests.createFakeOffer();
         Long newOfferId = fakeOffer.getId();
-        mockMvc.perform(get("/offers/" + newOfferId)
+        mockMvc.perform(get("/offer/" + newOfferId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -81,7 +81,7 @@ public class OfferAPITests {
         Offer fakeOffer = apiUtilsTests.createFakeOffer();
         offerService.applyToOffer(fakeOffer, fakeApplication);
 
-        mockMvc.perform(get("/offers/" + fakeOffer.getId() + "/applications")
+        mockMvc.perform(get("/offer/" + fakeOffer.getId() + "/applications")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -93,7 +93,7 @@ public class OfferAPITests {
         Application fakeApplication = apiUtilsTests.createFakeApplication();
         Offer fakeOffer = apiUtilsTests.createFakeOffer();
         offerService.applyToOffer(fakeOffer, fakeApplication);
-        mockMvc.perform(get("/offers/" + fakeOffer.getId())
+        mockMvc.perform(get("/offer/" + fakeOffer.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

@@ -1,8 +1,8 @@
 package br.com.deanx.recruitingprocessboot.application;
 
-import br.com.deanx.recruitingprocessboot.offers.Offer;
-import br.com.deanx.recruitingprocessboot.offers.OfferRepository;
-import br.com.deanx.recruitingprocessboot.offers.OfferService;
+import br.com.deanx.recruitingprocessboot.offer.Offer;
+import br.com.deanx.recruitingprocessboot.offer.OfferRepository;
+import br.com.deanx.recruitingprocessboot.offer.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
