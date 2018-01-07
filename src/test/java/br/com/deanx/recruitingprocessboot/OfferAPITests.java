@@ -1,8 +1,10 @@
 package br.com.deanx.recruitingprocessboot;
 
+import br.com.deanx.recruitingprocessboot.application.Application;
 import br.com.deanx.recruitingprocessboot.application.ApplicationRepository;
 import br.com.deanx.recruitingprocessboot.offers.Offer;
 import br.com.deanx.recruitingprocessboot.offers.OfferRepository;
+import br.com.deanx.recruitingprocessboot.offers.OfferService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,14 +36,16 @@ public class OfferAPITests {
     @Autowired
     private APIUtilsTests apiUtilsTests;
 
+    @Autowired
+    private OfferService offerService;
+
     @Before
     public void setUp() {
-        applicationRepository.deleteAll();
         offerRepository.deleteAll();
     }
     @Test
     public void givenOffers_whenGetOffers_theStatus200() throws Exception {
-        this.mockMvc.perform(get("/offers")
+        this.mockMvc.perform(get("/offers/")
                 .accept(parseMediaType("application/json"))
         ).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
@@ -50,7 +54,7 @@ public class OfferAPITests {
 
     @Test
     public void givenOffers_whenPostOffer_thenStatus201() throws Exception {
-        mockMvc.perform(post("/offers").content("{\n" +
+        mockMvc.perform(post("/offers/").content("{\n" +
                 "\"jobTitle\": \"Senior developer\",\n" +
                 "\"startDate\": \"2012-04-23\",\n" +
                 "\"numberOfApplications\":12\n" +
@@ -70,4 +74,18 @@ public class OfferAPITests {
                 .andExpect(jsonPath("$.jobTitle",is("Senior developer")));
 
     }
+
+    @Test
+    public void givenOffers_whenGetApplicationsByOfferById_thenStatus200() throws Exception {
+        Application fakeApplication = apiUtilsTests.createFakeApplication();
+        Offer fakeOffer = apiUtilsTests.createFakeOffer();
+        offerService.applyToOffer(fakeOffer, fakeApplication);
+
+        mockMvc.perform(get("/offers/" + fakeOffer.getId() + "/applications")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].id", is(fakeApplication.getId().intValue())));
+    }
+
 }

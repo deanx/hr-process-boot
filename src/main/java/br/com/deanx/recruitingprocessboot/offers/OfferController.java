@@ -21,8 +21,8 @@ public class OfferController {
 
     @RequestMapping(method = RequestMethod.GET, value="/offers/{offerId}")
     public ResponseEntity findOffer(@PathVariable Long offerId) {
-        List<Offer> offers = repository.findById(offerId);
-        return 1 == offers.size() ? new ResponseEntity<>(offers.get(0), HttpStatus.OK)
+        Offer offer = repository.findOne(offerId);
+        return null != offer ? new ResponseEntity<>(offer, HttpStatus.OK)
                 : new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
@@ -31,5 +31,11 @@ public class OfferController {
         return new ResponseEntity<>(repository.save(offer), HttpStatus.CREATED);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value="/offers/{offerId}/applications")
+    ResponseEntity getApplicationsByOfferId(@PathVariable Long offerId) {
+        Offer offer = repository.findOne(offerId);
+        return null != offer ? new ResponseEntity<>(offer.getApplicationList(), HttpStatus.OK)
+                : new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
 
 }
