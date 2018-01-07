@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @EnableAutoConfiguration
@@ -37,5 +34,12 @@ public class ApplicationController {
         offerService.applyToOffer(offer, application);
 
         return new ResponseEntity<>(application, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value="/applications/{applicationId}")
+    ResponseEntity findApplication(@PathVariable Long applicationId) {
+        Application application = repository.findOne(applicationId);
+        return null != application ? new ResponseEntity<>(application, HttpStatus.OK)
+                : new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 }

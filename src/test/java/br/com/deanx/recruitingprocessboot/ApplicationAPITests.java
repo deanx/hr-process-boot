@@ -1,5 +1,6 @@
 package br.com.deanx.recruitingprocessboot;
 
+import br.com.deanx.recruitingprocessboot.application.Application;
 import br.com.deanx.recruitingprocessboot.application.ApplicationRepository;
 import br.com.deanx.recruitingprocessboot.offers.Offer;
 import br.com.deanx.recruitingprocessboot.offers.OfferRepository;
@@ -13,11 +14,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.parseMediaType;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RecruitingProcessBootApplication.class)
@@ -35,17 +38,17 @@ public class ApplicationAPITests {
     private APIUtilsTests apiUtilsTests;
     @Before
     public void setUp() {
-        applicationRepository.deleteAll();
         offerRepository.deleteAll();
     }
 
     @Test
-    public void givenApplications_whenGetApplications_theStatus200() throws Exception {
-        this.mockMvc.perform(get("/applications")
+    public void givenApplications_whenGetApplicationById_theStatus200() throws Exception {
+        Application fakeApplication = apiUtilsTests.createFakeApplication();
+        this.mockMvc.perform(get("/applications/" + fakeApplication.getId())
                 .accept(parseMediaType("application/json"))
         ).andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
-                );
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].id", is(fakeApplication.getId().intValue())));
     }
 
     @Test
