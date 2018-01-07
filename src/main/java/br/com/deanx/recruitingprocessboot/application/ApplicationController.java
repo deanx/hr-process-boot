@@ -42,4 +42,17 @@ public class ApplicationController {
         return null != application ? new ResponseEntity<>(application, HttpStatus.OK)
                 : new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
+
+    @RequestMapping(method=RequestMethod.PUT, value="/applications/{applicationId}/applicationStatus")
+    ResponseEntity updateApplicationStatus(@RequestBody String applicationStatus, @PathVariable Long applicationId) {
+        Application application = repository.findOne(applicationId);
+        if(null == application) {
+            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+        }
+        final Application.applicationStatus newStatus = Application.applicationStatus.valueOf(applicationStatus.substring(1, applicationStatus.length() -1));
+
+        application.setApplicationStatus(newStatus);
+        repository.save(application);
+        return new ResponseEntity(application, HttpStatus.OK);
+    }
 }
