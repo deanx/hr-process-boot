@@ -8,15 +8,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @EnableAutoConfiguration
-
 public class ApplicationController {
     @Autowired
     private ApplicationRepository repository;
@@ -32,6 +29,9 @@ public class ApplicationController {
 
     @Autowired
     EventBus eventBus;
+
+    @Autowired
+    ApplicationStatusNotificationService applicationStatusNotificationService;
 
     @PostMapping("/applications")
     ResponseEntity saveOffer(@RequestBody Application application) {
@@ -67,12 +67,12 @@ public class ApplicationController {
         if(null == application) {
             return new ResponseEntity(null, HttpStatus.NOT_FOUND);
         }
-        final Application.applicationStatus newStatus = Application.applicationStatus.valueOf(applicationStatus.substring(1, applicationStatus.length() -1));
 
+        final Application.applicationStatus newStatus = Application.applicationStatus.valueOf(applicationStatus.substring(1, applicationStatus.length() -1));
         application.setApplicationStatus(newStatus);
+
         repository.save(application);
-        eventBus.notify("applicationStatusChange", Event.wrap(application));
-        latch.await(100, TimeUnit.MILLISECONDS);
+        applicationStatusNotificationService.notify(application);
 
         return new ResponseEntity(application, HttpStatus.OK);
     }

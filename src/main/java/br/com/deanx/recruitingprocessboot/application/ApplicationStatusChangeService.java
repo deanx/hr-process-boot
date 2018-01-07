@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 @Service
 public class ApplicationStatusChangeService implements Consumer<Event<Application>> {
     @Autowired
-    CountDownLatch latch;
+    private CountDownLatch latch;
 
     @Override
     public void accept(Event<Application> ev) {
