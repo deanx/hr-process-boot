@@ -33,7 +33,7 @@ public class ApplicationController {
     @Autowired
     EventBus eventBus;
 
-    @RequestMapping(method = RequestMethod.POST, value="/applications")
+    @PostMapping("/applications")
     ResponseEntity saveOffer(@RequestBody Application application) {
         Offer offer;
         try {
@@ -54,14 +54,14 @@ public class ApplicationController {
         return new ResponseEntity<>(application, HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="/applications/{applicationId}")
+    @GetMapping("/applications/{applicationId}")
     ResponseEntity findApplication(@PathVariable Long applicationId) {
         Application application = repository.findOne(applicationId);
         return null != application ? new ResponseEntity<>(application, HttpStatus.OK)
                 : new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping(method=RequestMethod.PUT, value="/applications/{applicationId}/applicationStatus")
+    @PutMapping("/applications/{applicationId}/applicationStatus")
     ResponseEntity updateApplicationStatus(@RequestBody String applicationStatus, @PathVariable Long applicationId) throws InterruptedException {
         Application application = repository.findOne(applicationId);
         if(null == application) {

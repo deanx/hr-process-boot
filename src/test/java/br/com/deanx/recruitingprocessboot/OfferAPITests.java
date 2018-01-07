@@ -41,6 +41,7 @@ public class OfferAPITests {
 
     @Before
     public void setUp() {
+        applicationRepository.deleteAll();
         offerRepository.deleteAll();
     }
     @Test
@@ -78,10 +79,10 @@ public class OfferAPITests {
     @Test
     public void givenOffers_whenGetApplicationsByOfferById_thenStatus200() throws Exception {
         Application fakeApplication = apiUtilsTests.createFakeApplication();
-        Offer fakeOffer = apiUtilsTests.createFakeOffer();
-        offerService.applyToOffer(fakeOffer, fakeApplication);
 
-        mockMvc.perform(get("/offers/" + fakeOffer.getId() + "/applications")
+        offerService.applyToOffer(fakeApplication.getOffer(), fakeApplication);
+
+        mockMvc.perform(get("/offers/" + fakeApplication.getOffer().getId() + "/applications")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -91,7 +92,7 @@ public class OfferAPITests {
     @Test
     public void givenSpecificOffer_whenGetOfferById_thenCountApplicationsAndStatus200() throws Exception {
         Application fakeApplication = apiUtilsTests.createFakeApplication();
-        Offer fakeOffer = apiUtilsTests.createFakeOffer();
+        Offer fakeOffer = fakeApplication.getOffer();
         offerService.applyToOffer(fakeOffer, fakeApplication);
         mockMvc.perform(get("/offers/" + fakeOffer.getId())
                 .contentType(MediaType.APPLICATION_JSON))

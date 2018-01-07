@@ -51,6 +51,7 @@ public class ApplicationAPITests {
     private APIUtilsTests apiUtilsTests;
     @Before
     public void setUp() {
+        applicationRepository.deleteAll();
         offerRepository.deleteAll();
     }
 
@@ -84,8 +85,6 @@ public class ApplicationAPITests {
     @Test
     public void givenApplications_whenPutApplicationStatus_thenStatus200() throws Exception {
         Application fakeApplication = apiUtilsTests.createFakeApplication();
-        Offer fakeOffer = apiUtilsTests.createFakeOffer();
-        offerService.applyToOffer(fakeOffer, fakeApplication);
 
         mockMvc.perform(put("/applications/" + fakeApplication.getId() + "/applicationStatus")
                 .contentType(MediaType.APPLICATION_JSON)

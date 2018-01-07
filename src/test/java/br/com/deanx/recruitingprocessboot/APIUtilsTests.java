@@ -27,15 +27,15 @@ public class APIUtilsTests {
     }
 
     public Offer createFakeOffer() {
-        Offer offer = getFakeOffer();
-        Offer newOffer = offerRepository.save(offer);
-        return newOffer;
+        return offerRepository.save(getFakeOffer());
     }
 
     public Application createFakeApplication() {
+        Offer fakeOffer = createFakeOffer();
         Application application = new Application();
         application.setEmail("test@test.com");
-        application.setOffer(getFakeOffer());
+        application.setOffer(offerRepository.findOne(fakeOffer.getId()));
+        application.setResume("Simple description");
         return applicationRepository.save(application);
     }
 }

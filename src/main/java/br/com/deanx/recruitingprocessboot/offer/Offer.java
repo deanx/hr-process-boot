@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -19,10 +21,12 @@ public class Offer {
     @GeneratedValue
     private Long id;
 
+    @NotEmpty(message = "Please inform job title")
     @Column(unique = true)
     private String jobTitle;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    @NotNull(message = "Please inform start date")
     private LocalDate startDate;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -55,7 +59,6 @@ public class Offer {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public LocalDate getStartDate() {
         return startDate;
