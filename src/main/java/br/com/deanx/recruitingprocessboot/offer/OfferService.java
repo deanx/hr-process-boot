@@ -11,11 +11,10 @@ public class OfferService {
     @Autowired
     private OfferRepository repository;
 
-    public Offer applyToOffer(Offer offer, Application application) {
+    public void applyToOffer(Offer offer, Application application) {
         List<Application> applicationList = offer.getApplicationList();
         applicationList.add(application);
         offer.setApplicationList(applicationList);
         repository.save(offer);
-        return offer;
     }
 }

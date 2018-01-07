@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.bus.EventBus;
 
+import javax.validation.Valid;
 import java.util.concurrent.CountDownLatch;
 
 @RestController
@@ -31,10 +32,10 @@ public class ApplicationController {
     EventBus eventBus;
 
     @Autowired
-    ApplicationStatusNotificationService applicationStatusNotificationService;
+    private ApplicationStatusNotificationService applicationStatusNotificationService;
 
     @PostMapping("/applications")
-    ResponseEntity saveOffer(@RequestBody Application application) {
+    ResponseEntity saveOffer(@Valid @RequestBody Application application) {
         Offer offer;
         try {
             offer = offerRepository.findById(application.getOffer().getId()).get(0);
