@@ -18,11 +18,16 @@ public class APIUtilsTests {
     @Autowired
     private ApplicationRepository applicationRepository;
 
-    public Offer createFakeOffer() {
+    private Offer getFakeOffer() {
         Offer offer = new Offer();
         offer.setJobTitle("Senior developer");
         offer.setStartDate(LocalDate.now());
         offer.setApplicationList(new ArrayList<Application>());
+        return offer;
+    }
+
+    public Offer createFakeOffer() {
+        Offer offer = getFakeOffer();
         Offer newOffer = offerRepository.save(offer);
         return newOffer;
     }
@@ -30,6 +35,7 @@ public class APIUtilsTests {
     public Application createFakeApplication() {
         Application application = new Application();
         application.setEmail("test@test.com");
+        application.setOffer(getFakeOffer());
         return applicationRepository.save(application);
     }
 }

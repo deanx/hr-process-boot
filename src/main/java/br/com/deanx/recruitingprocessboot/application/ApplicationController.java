@@ -8,9 +8,15 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.bus.Event;
+import reactor.bus.EventBus;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @EnableAutoConfiguration
+
 public class ApplicationController {
     @Autowired
     private ApplicationRepository repository;
@@ -20,6 +26,12 @@ public class ApplicationController {
 
     @Autowired
     private OfferRepository offerRepository;
+
+    @Autowired
+    private CountDownLatch latch;
+
+    @Autowired
+    EventBus eventBus;
 
     @RequestMapping(method = RequestMethod.POST, value="/applications")
     ResponseEntity saveOffer(@RequestBody Application application) {
@@ -31,7 +43,13 @@ public class ApplicationController {
         }
         application.setOffer(offer);
         application = repository.save(application);
-        offerService.applyToOffer(offer, application);
+        try {
+            offerService.applyToOffer(offer, application);
+        } catch(Exception e) {
+            // if there'' any trying to associate offer to application, rollback application without offer
+            application.setOffer(null);
+            repository.save(application);
+        }
 
         return new ResponseEntity<>(application, HttpStatus.CREATED);
     }
@@ -44,7 +62,7 @@ public class ApplicationController {
     }
 
     @RequestMapping(method=RequestMethod.PUT, value="/applications/{applicationId}/applicationStatus")
-    ResponseEntity updateApplicationStatus(@RequestBody String applicationStatus, @PathVariable Long applicationId) {
+    ResponseEntity updateApplicationStatus(@RequestBody String applicationStatus, @PathVariable Long applicationId) throws InterruptedException {
         Application application = repository.findOne(applicationId);
         if(null == application) {
             return new ResponseEntity(null, HttpStatus.NOT_FOUND);
@@ -53,6 +71,10 @@ public class ApplicationController {
 
         application.setApplicationStatus(newStatus);
         repository.save(application);
+        eventBus.notify("applicationStatusChange", Event.wrap(application));
+        latch.await(100, TimeUnit.MILLISECONDS);
+
         return new ResponseEntity(application, HttpStatus.OK);
     }
+
 }
