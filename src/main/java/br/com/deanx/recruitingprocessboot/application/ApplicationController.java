@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.bus.EventBus;
 
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 @RestController
@@ -36,18 +37,24 @@ public class ApplicationController {
 
     @PostMapping("/applications")
     ResponseEntity saveOffer(@Valid @RequestBody Application application) {
-        Offer offer;
-        try {
-            offer = offerRepository.findById(application.getOffer().getId()).get(0);
-        } catch(NullPointerException | ArrayIndexOutOfBoundsException ex) {
+
+        Offer offer = Optional.ofNullable(application)
+                .map(Application::getOffer)
+                .map(Offer::getId)
+                .map(id -> offerRepository.findOne(id))
+                .orElse(null);
+
+        if (null == offer) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+
+
         application.setOffer(offer);
         application = repository.save(application);
         try {
             offerService.applyToOffer(offer, application);
         } catch(Exception e) {
-            // if there'' any trying to associate offer to application, rollback application without offer
+            // if there is any problem trying to associate offer to application, rollback application without offer
             application.setOffer(null);
             repository.save(application);
         }
