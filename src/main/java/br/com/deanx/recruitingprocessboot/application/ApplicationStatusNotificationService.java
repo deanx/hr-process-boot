@@ -16,8 +16,11 @@ public class ApplicationStatusNotificationService {
     @Autowired
     EventBus eventBus;
 
+    public static final String APPLICATION_STATUS_CHANGE_EVENT = "applicationStatusChange";
+    private static final int APPLICATION_STATUS_CHANGE_AWAIT_PERIOD = 100;
+
     public void notify(Application application) throws InterruptedException {
-        eventBus.notify("applicationStatusChange", Event.wrap(application));
-        latch.await(100, TimeUnit.MILLISECONDS);
+        eventBus.notify(APPLICATION_STATUS_CHANGE_EVENT, Event.wrap(application));
+        latch.await(APPLICATION_STATUS_CHANGE_AWAIT_PERIOD, TimeUnit.MILLISECONDS);
     }
 }

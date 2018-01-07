@@ -1,6 +1,7 @@
 package br.com.deanx.recruitingprocessboot;
 
 import br.com.deanx.recruitingprocessboot.application.ApplicationStatusChangeService;
+import br.com.deanx.recruitingprocessboot.application.ApplicationStatusNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,7 +23,7 @@ public class RecruitingProcessBootApplication {
     @Bean
     EventBus createEventBus(reactor.Environment env) {
         EventBus eventBus = EventBus.create(env, reactor.Environment.THREAD_POOL);
-        eventBus.on($("applicationStatusChange"), receiver);
+        eventBus.on($(ApplicationStatusNotificationService.APPLICATION_STATUS_CHANGE_EVENT), receiver);
         return eventBus;
     }
 
