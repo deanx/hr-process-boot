@@ -88,4 +88,16 @@ public class OfferAPITests {
                 .andExpect(jsonPath("$.[0].id", is(fakeApplication.getId().intValue())));
     }
 
+    @Test
+    public void givenSpecificOffer_whenGetOfferById_thenCountApplicationsAndStatus200() throws Exception {
+        Application fakeApplication = apiUtilsTests.createFakeApplication();
+        Offer fakeOffer = apiUtilsTests.createFakeOffer();
+        offerService.applyToOffer(fakeOffer, fakeApplication);
+        mockMvc.perform(get("/offers/" + fakeOffer.getId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.numberOfApplications", is(1)));
+    }
+
 }

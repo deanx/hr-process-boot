@@ -46,7 +46,7 @@ public class ApplicationAPITests {
                 .accept(parseMediaType("application/json"))
         ).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[0].id", is(fakeApplication.getId().intValue())));
+                .andExpect(jsonPath("$.id", is(fakeApplication.getId().intValue())));
     }
 
     @Test

@@ -87,4 +87,9 @@ public class Offer {
     public void setApplicationList(List<Application> applicationList) {
         this.applicationList = applicationList;
     }
+
+    @PostLoad
+    private void calculateNumberOfApplications() {
+        this.numberOfApplications = applicationList.size();
+    }
 }
