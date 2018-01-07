@@ -26,7 +26,7 @@ public class ApplicationController {
         Offer offer;
         try {
             offer = offerRepository.findById(application.getOffer().getId()).get(0);
-        } catch(NullPointerException npe) {
+        } catch(NullPointerException | ArrayIndexOutOfBoundsException ex) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         application.setOffer(offer);
